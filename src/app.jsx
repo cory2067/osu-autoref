@@ -1,8 +1,9 @@
 import React from 'react';
+const remote = require('electron').remote;
 const Banchojs = require('bancho.js');
-const client = new Banchojs.BanchoClient(require("../config.json"));
-const Nodesu = require('nodesu');
-const api = new Nodesu.Client(require('../config.json').apiKey);
+const nodesu = require('nodesu');
+const path = require('path');
+const fs = require('fs');
 
 const match = { //split out into some config file or something
     refs: ['Cychloryn'],
@@ -10,8 +11,7 @@ const match = { //split out into some config file or something
 };
 
 let beatmaps = [{code: "DT1", id: 1262832, mod: 'DT'}, {code: "FM2", id: 1378285, mod: 'freemod'}, {code: "NM1", id: 1385398, mod: 'nomod'}];
-let channel;
-let lobby;
+let channel, lobby, client, api;
 
 function Chat(props) {
     return (<div>
@@ -27,6 +27,30 @@ export default class App extends React.Component {
         this.state = {
             chat: ""
         }
+
+        const dataPath = path.join(remote.app.getPath('userData'), 'autoref.json');
+        if (!fs.existsSync(dataPath)) {
+            this.launchLogin();
+        } else {
+            this.initBancho();
+        }
+    }
+
+    launchLogin() {
+        const modalPath = path.join('file://', __dirname, 'login.html')
+        let win = new remote.BrowserWindow({ width: 400, height: 320 })
+        win.on('close', function () {
+            win = null;
+            this.initBancho();
+        })
+        win.loadURL(modalPath)
+        win.show()
+        this.initBancho = this.initBancho.bind(this);
+    }
+
+    initBancho() {
+        client = new Banchojs.BanchoClient(require("../config.json"));
+        api = new nodesu.Client(require('../config.json').apiKey);
 
         client.connect().then(async () => {
             console.log("We're online!");
@@ -44,6 +68,7 @@ export default class App extends React.Component {
             })
         });
     }
+
     handleKey(e) {
         if (e.key === 'Enter') {
             channel.sendMessage(e.target.value);
