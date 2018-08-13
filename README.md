@@ -3,7 +3,7 @@
 Semi-automated referee interface for osu!  
 Tested only on Linux. May totally explode on Windows/Mac, but theoretically compatible.
 I'm sorry for using Electron, there's no reason this program needs to be this heavy.  
-Uses bancho.js by ThePoon.
+Uses bancho.js by ThePoon.  
 
 ## Features
 - GUI
@@ -26,3 +26,6 @@ Upon opening autoref for the first time, you should be prompted to enter some lo
 Don't put your real osu! password into this sketchy script.  
 - Use your IRC password: https://osu.ppy.sh/p/irc  
 - And you'll need an API key: https://osu.ppy.sh/p/api  
+
+## Screenshot
+![img machine broke](http://put.nu/files/-67uq_3.png)
