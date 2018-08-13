@@ -1,13 +1,13 @@
 # osu!autoref
 
-Semi-automated referee interface for osu!  
+Semi-automated referee interface for osu! by [Cychloryn](https://osu.ppy.sh/users/6921736)  
 Tested only on Linux. May totally explode on Windows/Mac, but theoretically compatible.
 I'm sorry for using Electron, there's no reason this program needs to be this heavy.  
 Uses bancho.js by ThePoon.  
 
 ## Features
 - GUI
-    - Built-in chat (todo: make chat face the other direction
+    - Built-in chat (todo: make chat face the other direction)
     - Player invite button
     - Map dropdown selector
 - Automation
