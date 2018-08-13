@@ -6,30 +6,34 @@ const nodesu = require('nodesu');
 const path = require('path');
 const fs = require('fs');
 
-const match = { //split out into some config file or something
+const match = { //todo: split out into some config file or something
     teams: [
-        {name: 'leftovers', members: ['EwGoo', 'FFI'], score: 0},
-        {name: 'flubber conquest', members: ['Setizia', 'Arsene', 'Cychloryn'], score: 0}
+        {name: 'Mouse Paradise', members: ['Lefafel', '[Lucky]', 'Cychloryn'], score: 0},
+        {name: 'osu! pros', members: ['Flaiimz', '-Rosen'], score: 0}
     ]
 };
 
-let beatmaps = [
-    {code: "NM1", id: 1514696, mod: 'nomod'},
-    {code: "NM2", id: 154165, mod: 'nomod'},
-    {code: "NM3", id: 1569291, mod: 'nomod'},
-    {code: "NM4", id: 1583060, mod: 'nomod'},
-    {code: "NM5", id: 74962, mod: 'nomod'},
-    {code: "HD1", id: 653128, mod: 'HD'},
-    {code: "HD2", id: 136540, mod: 'HD'},
-    {code: "HR1", id: 163789, mod: 'HR'},
-    {code: "HR2", id: 50844, mod: 'HR'},
-    {code: "DT1", id: 486220, mod: 'DT'},
-    {code: "DT2", id: 94244, mod: 'DT'},
-    {code: "FM1", id: 1055343, mod: 'freemod'},
-    {code: "FM2", id: 1569768, mod: 'freemod'},
-    {code: "FM3", id: 43167, mod: 'freemod'},
-    {code: "TB", id: 780182, mod: 'freemod'},
-    {code: "RD", id: 1219563, mod: 'freemod'}
+let beatmaps = [ // SF pool
+    {code: "NM1", id: 1093352, mod: 'nomod'},
+    {code: "NM2", id: 1440742, mod: 'nomod'},
+    {code: "NM3", id: 1598151, mod: 'nomod'},
+    {code: "NM4", id: 1371758, mod: 'nomod'},
+    {code: "NM5", id: 1600024, mod: 'nomod'},
+    {code: "NM6", id: 80102, mod: 'nomod'},
+    {code: "HD1", id: 1248887, mod: 'HD'},
+    {code: "HD2", id: 1626314, mod: 'HD'},
+    {code: "HD3", id: 126470, mod: 'HD'},
+    {code: "HR1", id: 792950, mod: 'HR'},
+    {code: "HR2", id: 1343218, mod: 'HR'},
+    {code: "HR3", id: 1266318, mod: 'HR'},
+    {code: "DT1", id: 258665, mod: 'DT'},
+    {code: "DT2", id: 1589441, mod: 'DT'},
+    {code: "DT3", id: 1240468, mod: 'DT'},
+    {code: "FM1", id: 693035, mod: 'freemod'},
+    {code: "FM2", id: 116279, mod: 'freemod'},
+    {code: "FM3", id: 34162, mod: 'freemod'},
+    {code: "TB", id: 1115984, mod: 'freemod'},
+    {code: "RD", id: 1529804, mod: 'freemod'}
 ];
 let channel, lobby, client, api;
 
@@ -66,8 +70,8 @@ export default class App extends React.Component {
         this.state = {
             chat: "",
             map: "",
-            auto: false,
-            autoscore: true
+            auto: false,      // auto map selection
+            autoscore: false  // auto keep track of score
         }
 
         const dataPath = path.join(remote.app.getPath('userData'), 'autoref.json');
@@ -147,7 +151,7 @@ export default class App extends React.Component {
 
              lobby.on("playerJoined", (obj) => {
                  console.log("A player has joined!");
-                 if (match.teams[0].members.includes(obj.player.user.ircUsername)) {
+                 if (match.teams[0].members.includes(obj.player.user.username)) {
                      lobby.changeTeam(obj.player, "Blue");
                  } else {
                      lobby.changeTeam(obj.player, "Red");
@@ -186,7 +190,8 @@ export default class App extends React.Component {
             channel.on("message", (msg) => {
                 this.print(msg);
 
-                if (/*!this.state.map*/ this.state.auto && msg.message.length > 2) {
+                let isid = !isNaN(msg.message.slice(-1));
+                if (this.state.auto && (msg.message.length > 4 || (msg.message.length > 2 && isid))) {
                     let r = beatmaps.filter((map) => {
                         return map.name && map.name.toLowerCase().includes(msg.message.toLowerCase());
                     });
@@ -247,9 +252,9 @@ export default class App extends React.Component {
                 {mapOptions}
             </select>
             <br />
-            <button onClick={this.toggleAuto}>Auto: {this.state.auto ? "On" : "Off"}</button>
+            <button onClick={this.toggleAuto}>Auto map select: {this.state.auto ? "On" : "Off"}</button>
             <br />
-            <button onClick={this.toggleAutoScore}>AutoScore: {this.state.autoscore ? "On" : "Off"}</button>
+            <button onClick={this.toggleAutoScore}>Auto score: {this.state.autoscore ? "On" : "Off"}</button>
         </div>);
     }
 }
