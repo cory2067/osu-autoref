@@ -18,6 +18,10 @@ const BLUE = 0, RED = 1;
 match.score = [0, 0];
 match.picking = 0;
 
+// turn on to keep track of scores
+// and ask players to pick maps
+let auto = false;
+
 // populate mappool with map info
 function initPool() {
   return Promise.all(pool.map(async (b) => {
@@ -48,7 +52,7 @@ async function init() {
 
   const password = Math.random().toString(36).substring(8);
   await lobby.setPassword(password);
-   await lobby.setMap(1262832); //hitorigoto dayo
+  await lobby.setMap(1262832); //hitorigoto dayo
 
   console.log(chalk.bold.green("Lobby created!"));
   console.log(chalk.bold.cyan(`Name: ${lobby.name}, password: ${password}`));
@@ -102,6 +106,10 @@ function printScore() {
   channel.sendMessage(`${match.teams[0].name} ${match.score[0]} -- ${match.score[1]} ${match.teams[1].name}`);
 }
 
+function promptPick() {
+  channel.sendMessage(`${match.teams[match.picking].name}, pick the next map`);
+}
+
 // Respond to events occurring in lobby
 function createListeners() {
   lobby.on("playerJoined", (obj) => {
@@ -124,6 +132,27 @@ function createListeners() {
 
   lobby.on("allPlayersReady", (obj) => {
     lobby.startMatch(10);
+  });
+
+  lobby.on("matchFinished", (scores) => {
+    let s = {"Blue": 0, "Red": 0};
+    scores.forEach((score) => {
+      s[score.player.team] += score.pass * score.score;
+    });
+
+    let diff = s["Blue"] - s["Red"];
+    if (diff > 0) {
+      channel.sendMessage(`${match.teams[BLUE].name}  wins by ${diff}`);
+      if (auto) match.teams[BLUE].score++;
+    } else if (diff < 0) {
+      channel.sendMessage(`${match.teams[RED].name} wins by ${-diff}`);
+      if (auto) match.teams[RED].score++;
+    } else {
+      channel.sendMessage("It was a tie!");
+    }
+
+    // only update the score if auto is turned on
+    if (auto) printScore();    
   });
 
   channel.on("message", async (msg) => {
@@ -152,12 +181,26 @@ function createListeners() {
           match.score[1] = parseInt(m[2]);
           printScore();
           break;
+        case 'auto':
+          auto = !auto;
+          channel.sendMessage("Auto referee is " + (auto ? "ON" : "OFF"));
+          if (auto) promptPick(); 
+          break;
+        case 'picking':
+          match.picking = (m[1].toLowerCase() === "red" ? 1 : 0);
+          promptPick();
+          break;
         case 'ping':
           channel.sendMessage("pong");
           break;
         default:
           console.log(chalk.bold.red(`Unrecognized command "${m[0]}"`));
       }
+    } 
+   
+    // people on the picking team can choose just by saying the map name/code
+    if (auto && match.teams[match.picking].members.includes(msg.user.ircUsername)) {
+      setBeatmap(msg.message);
     }
   });
 }
