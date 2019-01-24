@@ -1,6 +1,7 @@
-osu!autoref
+# osu!autoref
 
-Semi-automated referee bot for osu! by [Cychloryn](https://osu.ppy.sh/users/6921736)
+Semi-automated referee bot for osu! by [Cychloryn](https://osu.ppy.sh/users/6921736).
+
 Tested on Linux and Windows.
 Uses bancho.js by ThePoon.
 
@@ -28,9 +29,11 @@ Load the mappool into this file. The format should be self-explanatory from the 
 Contains the users for your match. The first team will be blue, and the second will be red.
 
 ## Running
-Requires: node.js/npm
-`npm install`
-`npm start`
+Requires: node.js (I use node v10)
+```
+npm install
+npm start
+```
 
 ## Usage
 Upon running this bot, a match will be created, and the password will be logged to the terminal. You can send messages to the chatroom via the terminal window, but this is kinda janky, so I'd recommenda also having an IRC client open/being in-game.
@@ -51,6 +54,7 @@ When you're ready to begin the match, set the team who picks first, and enable a
 If you need to override which map is chosen, you can use the "map" command:
 ```
 >map nm1
+>map everything will freeze
 ```
 
 When all players are ready, the bot will start the match. After the match, the bot will say the winner of the match, and give the current score. If you need to override the current score, do so with the following command (e.g. blue 4 -- 3 red)
