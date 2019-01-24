@@ -2,6 +2,7 @@ const bancho = require('bancho.js');
 const chalk = require('chalk');
 const nodesu = require('nodesu');
 const fs = require('fs');
+const readline = require('readline');
 
 // Remember to fill config.json with your credentials
 const config = require('./config.json');
@@ -12,6 +13,10 @@ const client = new bancho.BanchoClient(config);
 const api = new nodesu.Client(config.apiKey);
 
 let channel, lobby;
+
+const BLUE = 0, RED = 1;
+match.score = [0, 0];
+match.picking = 0;
 
 // populate mappool with map info
 function initPool() {
@@ -32,7 +37,7 @@ async function init() {
   try {
     await client.connect();
     console.log(chalk.bold.green("Connected to Bancho!"));
-    channel = await client.createLobby(`${match.tournament}: ${match.teams[0].name} vs ${match.teams[1].name}`);
+    channel = await client.createLobby(`${match.tournament}: ${match.teams[BLUE].name} vs ${match.teams[RED].name}`);
   } catch (err) {
     console.log(err);
     console.log(chalk.bold.red("Failed to create lobby"));
@@ -93,6 +98,10 @@ function setBeatmap(input, force=false) {
   }
 }
 
+function printScore() {
+  channel.sendMessage(`${match.teams[0].name} ${match.score[0]} -- ${match.score[1]} ${match.teams[1].name}`);
+}
+
 // Respond to events occurring in lobby
 function createListeners() {
   lobby.on("playerJoined", (obj) => {
@@ -100,9 +109,9 @@ function createListeners() {
     console.log(chalk.yellow(`Player ${name} has joined!`));
 
     // Attempt to auto-assign team
-    if (match.teams[0].members.includes(name)) {
+    if (match.teams[BLUE].members.includes(name)) {
       lobby.changeTeam(obj.player, "Blue");
-    } else if (match.teams[1].members.include(name)) {
+    } else if (match.teams[RED].members.include(name)) {
       lobby.changeTeam(obj.player, "Red");
     } else {
       console.log(chalk.red("Warning! Couldn't figure out team"));
@@ -135,8 +144,13 @@ function createListeners() {
             await lobby.invitePlayer(p);
           }
           break;
-        case 'set':
+        case 'map':
           setBeatmap(m.slice(1).join(' '), true);
+          break;
+        case 'score':
+          match.score[0] = parseInt(m[1]);
+          match.score[1] = parseInt(m[2]);
+          printScore();
           break;
         case 'ping':
           channel.sendMessage("pong");
