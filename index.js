@@ -2,7 +2,12 @@ const bancho = require('bancho.js');
 const chalk = require('chalk');
 const nodesu = require('nodesu');
 const fs = require('fs');
+
 const readline = require('readline');
+const rl = readline.createInterface({
+    input: process.stdin,
+      output: process.stdout
+});
 
 // Remember to fill config.json with your credentials
 const config = require('./config.json');
@@ -67,7 +72,7 @@ async function init() {
 // Sets current beatmap by matching a user input
 function setBeatmap(input, force=false) {
   let isCode = !isNaN(input.slice(-1)); //is a numbered map code like NM2, DT1, etc.
-  if (force || input.length > 4 || (msg.message.length > 2 && isCode)) {
+  if (force || input.length > 4 || (input.length > 2 && isCode)) {
     
     const codeResult = pool.filter((map) => {
       return map.code.toLowerCase() === input.toLowerCase();
@@ -142,7 +147,7 @@ function createListeners() {
 
     let diff = s["Blue"] - s["Red"];
     if (diff > 0) {
-      channel.sendMessage(`${match.teams[BLUE].name}  wins by ${diff}`);
+      channel.sendMessage(`${match.teams[BLUE].name} wins by ${diff}`);
       if (auto) match.teams[BLUE].score++;
     } else if (diff < 0) {
       channel.sendMessage(`${match.teams[RED].name} wins by ${-diff}`);
@@ -152,7 +157,11 @@ function createListeners() {
     }
 
     // only update the score if auto is turned on
-    if (auto) printScore();    
+    if (auto) {
+      match.picking = 1 - match.picking;
+      printScore();
+      promptPick();
+    };    
   });
 
   channel.on("message", async (msg) => {
@@ -204,6 +213,10 @@ function createListeners() {
     }
   });
 }
+
+rl.on('line', (input) => {
+  channel.sendMessage(input);
+});
 
 async function close() {
   console.log(chalk.cyan("Closing..."));
