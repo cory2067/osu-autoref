@@ -191,13 +191,13 @@ function createListeners() {
           printScore();
           break;
         case 'auto':
-          auto = !auto;
+          auto = (m[1] === 'on');
           channel.sendMessage("Auto referee is " + (auto ? "ON" : "OFF"));
           if (auto) promptPick(); 
           break;
         case 'picking':
           match.picking = (m[1].toLowerCase() === "red" ? 1 : 0);
-          promptPick();
+          if (auto) promptPick();
           break;
         case 'ping':
           channel.sendMessage("pong");
