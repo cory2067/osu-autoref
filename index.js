@@ -104,6 +104,7 @@ function setBeatmap(input, force=false) {
     channel.sendMessage("Selecting " + map.name);
     lobby.setMap(map.id);
     lobby.setMods(mod, false);
+    return map.code;
   }
 }
 
@@ -183,7 +184,8 @@ function createListeners() {
           }
           break;
         case 'map':
-          setBeatmap(m.slice(1).join(' '), true);
+          const map = setBeatmap(m.slice(1).join(' '), true);
+          if (map) console.log(chalk.cyan(`Changing map to ${map}`));
           break;
         case 'score':
           match.score[0] = parseInt(m[1]);
@@ -209,7 +211,8 @@ function createListeners() {
    
     // people on the picking team can choose just by saying the map name/code
     if (auto && match.teams[match.picking].members.includes(msg.user.ircUsername)) {
-      setBeatmap(msg.message);
+      const map = setBeatmap(msg.message);
+      if (map) console.log(chalk.cyan(`Changing map to ${map}`));
     }
   });
 }
