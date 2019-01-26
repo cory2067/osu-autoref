@@ -20,6 +20,7 @@ const api = new nodesu.Client(config.apiKey);
 let channel, lobby;
 
 const BLUE = 0, RED = 1;
+match.winningScore = Math.ceil(match.BO/2);
 match.score = [0, 0];
 match.picking = 0;
 
@@ -163,8 +164,17 @@ function createListeners() {
     if (auto) {
       match.picking = 1 - match.picking;
       printScore();
-      promptPick();
-    };    
+
+      if (match.score[BLUE] >= match.winningScore) {
+        channel.sendMessage(`${match.teams[BLUE].name} has won the match!`);
+      } else if (match.score[RED] >= match.winningScore) {
+        channel.sendMessage(`${match.teams[RED].name} has won the match!`);
+      } else if (match.score[BLUE] === match.winningScore - 1 && match.score[RED] === match.winningScore - 1) {
+        channel.sendMessage("It's time for the tiebreaker!");
+      } else {
+        promptPick();
+      }
+    }    
   });
 
   channel.on("message", async (msg) => {

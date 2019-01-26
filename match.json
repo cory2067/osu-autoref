@@ -1,8 +1,9 @@
 {
-	"tournament": "o!RT 2",
-	"teams": [
-			{"name": "Mouse Paradise", "members": ["Setizia"]},
-			{"name": "osu! pros", "members": ["Cychloryn"]}
-	]
+  "tournament": "o!RT 2",
+  "BO": 5,
+  "teams": [
+      {"name": "Lobby 42", "members": ["Cychloryn", "Diempyl", "Audreych", "Shovan"]},
+      {"name": "Shamrock Milkshake", "members": ["Blake1412", "ZenZen", "Cediv"]}
+  ]
 }
 

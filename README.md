@@ -26,7 +26,7 @@ Create a file `config.json`. You can copy the template file `config.example.json
 Load the mappool into this file. The format should be self-explanatory from the example pool. It requires only the map code (NM2, HR3, DT1, etc) and the ID of the map. The bot will infer the mods based on the map code, but you can (optionally) explicitly provide the mod via the "mod" field.
 
 ### match.json
-Contains the users for your match. The first team will be blue, and the second will be red.
+Contains the users for your match. The first team will be blue, and the second will be red. I usually add myself to one of the teams, in case I want to join in-game. This file also contains match metadata like the name of the tournament, and the "best-of" for the match.
 
 ## Running
 Requires: node.js (I use node v10)
