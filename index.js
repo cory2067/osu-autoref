@@ -172,6 +172,7 @@ function createListeners() {
         channel.sendMessage(`${match.teams[RED].name} has won the match!`);
       } else if (match.score[BLUE] === match.winningScore - 1 && match.score[RED] === match.winningScore - 1) {
         channel.sendMessage("It's time for the tiebreaker!");
+        setBeatmap('TB', true);
       } else {
         promptPick();
       }
