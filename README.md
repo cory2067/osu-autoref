@@ -62,3 +62,23 @@ When all players are ready, the bot will start the match. After the match, the b
 >score 4 3
 ```
 
+## Using 'load-match' tool
+I included a tiny script that I use for managing multiple matches. Create a directory "matches" and fill it with match files (following the format of the default match.json).
+
+For example, your file structure will look something like this:
+```
+osu-autoref/
+  matches/
+    G4.json
+    G5.json
+    G6.json 
+  index.js
+  config.json
+  package.json
+  load-match
+```
+
+Launch the bot for match G4 by running:
+```
+./load-match G4
+```
