@@ -124,7 +124,7 @@ function createListeners() {
     // Attempt to auto-assign team
     if (match.teams[BLUE].members.includes(name)) {
       lobby.changeTeam(obj.player, "Blue");
-    } else if (match.teams[RED].members.include(name)) {
+    } else if (match.teams[RED].members.includes(name)) {
       lobby.changeTeam(obj.player, "Red");
     } else {
       console.log(chalk.red("Warning! Couldn't figure out team"));
@@ -148,10 +148,10 @@ function createListeners() {
     let diff = s["Blue"] - s["Red"];
     if (diff > 0) {
       channel.sendMessage(`${match.teams[BLUE].name} wins by ${diff}`);
-      if (auto) match.teams[BLUE].score++;
+      if (auto) match.score[BLUE]++;
     } else if (diff < 0) {
       channel.sendMessage(`${match.teams[RED].name} wins by ${-diff}`);
-      if (auto) match.teams[RED].score++;
+      if (auto) match.score[RED]++;
     } else {
       channel.sendMessage("It was a tie!");
     }
