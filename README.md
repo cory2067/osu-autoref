@@ -62,6 +62,12 @@ When all players are ready, the bot will start the match. After the match, the b
 >score 4 3
 ```
 
+At the end of the match, close the lobby with:
+```
+>close
+```
+This command is recommended over `!mp close`, because it also disconnects the bot from Bancho and cleanly exits the program.
+
 ## Using 'load-match' tool
 I included a tiny script that I use for managing multiple matches. Create a directory "matches" and fill it with match files (following the format of the default match.json).
 

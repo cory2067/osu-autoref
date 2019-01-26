@@ -5,8 +5,8 @@ const fs = require('fs');
 
 const readline = require('readline');
 const rl = readline.createInterface({
-    input: process.stdin,
-      output: process.stdout
+  input: process.stdin,
+  output: process.stdout
 });
 
 // Remember to fill config.json with your credentials
@@ -108,6 +108,7 @@ function setBeatmap(input, force=false) {
     lobby.setMap(map.id);
     lobby.setMods(mod, false);
     return map.code;
+    rl.close();
   }
 }
 
@@ -235,6 +236,7 @@ rl.on('line', (input) => {
 
 async function close() {
   console.log(chalk.cyan("Closing..."));
+  rl.close();
   await lobby.closeLobby();
   await client.disconnect();
   console.log(chalk.cyan("Closed."));
@@ -242,5 +244,5 @@ async function close() {
 
 init()
   .then(() => {
-    console.log(chalk.dim("Listening..."));
+    console.log(chalk.bold.green("Initialization complete!"));
   })
