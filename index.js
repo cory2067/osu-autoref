@@ -95,7 +95,9 @@ function setBeatmap(input, force=false) {
     // Find correct mods based on map code
     let mapType = map.code.slice(0, 2);
     let mod = 'Freemod';
-    if (['HD', 'HR', 'DT'].includes(mapType)) {
+    if (map.mod) {
+      mod = map.mod; // if mod explicitly provided (not normal)
+    } else if (['HD', 'HR', 'DT'].includes(mapType)) {
       mod = mapType;
     } else if (mapType === 'NM') {
       mod = 'None';
