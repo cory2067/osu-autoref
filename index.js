@@ -108,7 +108,6 @@ function setBeatmap(input, force=false) {
     lobby.setMap(map.id);
     lobby.setMods(mod, false);
     return map.code;
-    rl.close();
   }
 }
 
