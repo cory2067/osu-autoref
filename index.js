@@ -144,24 +144,23 @@ function createListeners() {
   });
 
   lobby.on("matchFinished", (scores) => {
-    let s = {"Blue": 0, "Red": 0};
-    scores.forEach((score) => {
-      s[score.player.team] += score.pass * score.score;
-    });
-
-    let diff = s["Blue"] - s["Red"];
-    if (diff > 0) {
-      channel.sendMessage(`${match.teams[BLUE].name} wins by ${diff}`);
-      if (auto) match.score[BLUE]++;
-    } else if (diff < 0) {
-      channel.sendMessage(`${match.teams[RED].name} wins by ${-diff}`);
-      if (auto) match.score[RED]++;
-    } else {
-      channel.sendMessage("It was a tie!");
-    }
-
-    // only update the score if auto is turned on
     if (auto) {
+      let s = {"Blue": 0, "Red": 0};
+      scores.forEach((score) => {
+        s[score.player.team] += score.pass * score.score;
+      });
+
+      let diff = s["Blue"] - s["Red"];
+      if (diff > 0) {
+        channel.sendMessage(`${match.teams[BLUE].name} wins by ${diff}`);
+        match.score[BLUE]++;
+      } else if (diff < 0) {
+        channel.sendMessage(`${match.teams[RED].name} wins by ${-diff}`);
+        match.score[RED]++;
+      } else {
+        channel.sendMessage("It was a tie!");
+      }
+
       match.picking = 1 - match.picking;
       printScore();
 
@@ -171,7 +170,9 @@ function createListeners() {
         channel.sendMessage(`${match.teams[RED].name} has won the match!`);
       } else if (match.score[BLUE] === match.winningScore - 1 && match.score[RED] === match.winningScore - 1) {
         channel.sendMessage("It's time for the tiebreaker!");
-        setBeatmap('TB', true);
+
+        // bug: after match ends, need to wait a bit before changing map
+        setTimeout(() => setBeatmap('TB', true), 2000);
       } else {
         promptPick();
       }
